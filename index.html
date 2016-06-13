@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Csv Upload</title>
+  <script src="./CSV-JS/csv.js" charset="utf-8"></script>
+  <script
+  src="https://code.jquery.com/jquery-2.2.4.js"
+  integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+  crossorigin="anonymous">
+  </script>
+</head>
+<body>
+  <label for="import-csv">Csv file</label>
+  <input id="import-csv" type="file" name="csv_file" value="">
+  <script type="text/javascript">
+    function loadFromCsv() {
+      var reader = new FileReader();
+      reader.onload = function( event ) {
+        var contents = event.target.result;
+        var lines = CSV.parse( contents );
+
+        var $table    = $('<table>');
+        var _$row      = $('<tr>');
+        var _$header   = $('<th>');
+        var _$cell     = $('<td>');
+
+        lines.forEach(function( line ) {
+          var $row = _$row.clone();
+
+          line.forEach( function( item ) {
+
+            var $cell = ( lines.indexOf(line) !== 0)? _$cell.clone(): _$header.clone();
+
+            $cell.html( item );
+            $row.append( $cell );
+          });
+          $table.append( $row );
+        });
+        $('body').append( $table );
+      }
+      reader.onerror = function( event ) {
+
+        console.error( 'cannot read file' );
+      }
+      reader.readAsText( event.target.files[0] );
+    }
+
+    document.getElementById('import-csv').addEventListener( 'change', loadFromCsv );
+  </script>
+</body>
+</html>
